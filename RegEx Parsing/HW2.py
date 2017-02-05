@@ -1,27 +1,41 @@
 import re
-myfile = open('all-OANC.txt', 'r')
-outputfile = open('workfile', 'w')
+import argparse
+#Parsing the input/output file name arguments from the terminal
+#parser = argparse.ArgumentParser()
+#parser.add_argument("--input", help="name of input file")
+#parser.add_argument("--output", help="name of output file")
+#args = parser.parse_args()
+#opening files that we parse and write into
+#myfile = open(args.input, 'r')
+#outputfile = open(args.output, 'w')
+
+myfile = open('custom.txt', 'r')
+outputfile = open('workfile.txt', 'w')
 
 text = myfile.read().replace('\n', ' ')
 
-numty = "twenty|thirtyforty|fifty|sixty|seventy|eighty|ninety"
-num = "a|one|two|t[h\']ree|four|five|six|seven|eight|nine|ten|eleven|twelve|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen"
+numty = "(twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)"
+num = "(a|one|two|t[h\']ree|four|five|six|seven|eight|nine|ten|eleven|twelve|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen)"
 
-#seventy(or numbers) dollars optional cents amount
-letters = "("+numty+")?( |-)?(" + num +")?( |-)?(hun[d\']red|thousand)?(million|billion)?( |-)?([1-9][0-9]*[ ,.]?[0-9]*)?( |-)?(dollars?)(("+numty+")?( |-)?(and )?(" + num +")?([1-9][0-9]*)?( |-)?cents?)?"
-#dollarsign and the following value w cents
-dollarsign = "(\$ ?\d+[ ,.]?\d*)"
-#only values ending with cents
-cents = "(("+numty+")?( |-)?(" + num +")|([1-9][0-9]*))( |-)?cents?" 
+letternumber = "("+numty+"( |-)?"+num+"?( |-)?(hun[d\']red|thousand)?(million|billion|trillion)?|"\
+               +numty+"?( |-)?"+num+"( |-)?(hun[d\']red|thousand)?(million|billion|trillion)?|"\
+               +numty+"?( |-)?"+num+"?( |-)?(hun[d\']red|thousand)(million|billion|trillion)?|"\
+               +numty+"?( |-)?"+num+"?( |-)?(hun[d\']red|thousand)?(\d+)?( million| billion| trillion))"
 
 
-regex = r"("+letters+"|"+dollarsign+"|"+cents+")"
+cents = "([(US)$.]?("+letternumber+"|(\d+[ ,.]?)+\d)( |-| U.S. )cents?\\b)"
 
+dollartext = "("+letternumber+"|(\d+[ ,.]?)+\d)( |-)?dollars?\\b( |and )?"+cents+"?"
+
+dollarsign = "((US)?\$ ?(\d+[ ,.]?)+\d)"
+
+
+regex = r"("+dollartext+"|"+dollarsign+"|"+cents+")"
 matches = re.findall(regex, text, flags=re.IGNORECASE)
 
 #print matches
 for match in matches:
-    #print(match[0])
+    print(match[0])
     outputfile.write(match[0] + "\n")
 
 outputfile.close()
