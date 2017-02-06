@@ -5,39 +5,55 @@ import argparse
 #parser.add_argument("--input", help="name of input file")
 #parser.add_argument("--output", help="name of output file")
 #args = parser.parse_args()
-#opening files that we parse and write into
-#myfile = open(args.input, 'r')
-#outputfile = open(args.output, 'w')
 
-myfile = open('custom.txt', 'r')
+#most efficient way of searching for numbers writen with characters
+letternumber = "((e(?:leven|ight(?:een|y)?)|"\
+                "t(?:w(?:o|e(?:lve|nty))|h(?:irt(?:een|y)|ousand|ree)|en|rillion)|"\
+                "f(?:o(?:ur(?:teen)?|rty)|i(?:ft(?:een|y)|ve))|"\
+                "s(?:ix(?:t(?:een|y))?|even(?:t(?:een|y))?)|"\
+                "nine(?:t(?:een|y))?|"\
+                "one|"\
+                "hundred|"\
+                "[mb]illion)( |-)?)+"
+
+words = "a? few |several |half a |quarter of " 
+#searching for digits with every form of decimal separators
+digit = "\d+([ ,\.-]?\d+){1,3}"
+#expressions that only have cents includes corner cases such as US$ .38 cents
+cents = "((\\bUS ?|U\.S\. ?|$ ?| ?\.)*("+letternumber+"|"+digit+")( |-| U.S. )cents?\\b)"
+#expressions that contain "dollar" with option $ or cents expression
+dollartext = "(\\bUS ?|\$ ?|"+words+")*("+letternumber+"|"+digit+")( |-)?dollars?\\b( |and )?"+cents+"?"
+#expressions containing $ signs
+dollarsign = "(\\bUS ?)?\$ ?"+digit+"( hundred| thousand| million| billion| trillion)?"
+#expressions saying things like millions of dollars
+ofdollars = "((m|b|tr)illions|thousands|hundreds) of dollars"
+
+#compiling the regex
+regex = r"("+dollartext+"|"+dollarsign+"|"+cents+"|"+ofdollars+")"
+h = re.compile(regex, re.IGNORECASE)
+
+
+#opening input output files and writing the results into them
+
+#outputfile = open(args.output+"(short).txt", 'w')
+#outputfile2 = open(args.output+"(long).txt", 'w')
 outputfile = open('workfile.txt', 'w')
-
-text = myfile.read().replace('\n', ' ')
-
-numty = "(twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)"
-num = "(a|one|two|t[h\']ree|four|five|six|seven|eight|nine|ten|eleven|twelve|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen)"
-
-letternumber = "("+numty+"( |-)?"+num+"?( |-)?(hun[d\']red|thousand)?(million|billion|trillion)?|"\
-               +numty+"?( |-)?"+num+"( |-)?(hun[d\']red|thousand)?(million|billion|trillion)?|"\
-               +numty+"?( |-)?"+num+"?( |-)?(hun[d\']red|thousand)(million|billion|trillion)?|"\
-               +numty+"?( |-)?"+num+"?( |-)?(hun[d\']red|thousand)?(\d+)?( million| billion| trillion))"
-
-
-cents = "([(US)$.]?("+letternumber+"|(\d+[ ,.]?)+\d)( |-| U.S. )cents?\\b)"
-
-dollartext = "("+letternumber+"|(\d+[ ,.]?)+\d)( |-)?dollars?\\b( |and )?"+cents+"?"
-
-dollarsign = "((US)?\$ ?(\d+[ ,.]?)+\d)"
-
-
-regex = r"("+dollartext+"|"+dollarsign+"|"+cents+")"
-matches = re.findall(regex, text, flags=re.IGNORECASE)
-
-#print matches
-for match in matches:
-    print(match[0])
-    outputfile.write(match[0] + "\n")
-
+outputfile2 = open('workfile2.txt', 'w')
+#with open("args.input.txt", "r") as ins:
+with open("all-OANC.txt", "r") as inputfile:
+#with open("custom.txt", "r") as inputfile:
+    for line in inputfile:
+       matches = h.findall(line)
+       if (len(matches) != 0):
+            for match in matches:
+                query = match[0].replace("$", "\$");
+                outputfile.write( match[0] + "\n")
+                bracketed = re.sub(r'('+ query +')', r'[\1]', line)
+            #print bracketed
+            #print "\n"
+            outputfile2.write(bracketed + "\n")
+           
 outputfile.close()
-myfile.close()
+outputfile2.close()
+inputfile.close()
 
