@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import re
 import argparse
 #Parsing the input/output file name arguments from the terminal
@@ -6,20 +7,23 @@ import argparse
 #parser.add_argument("--output", help="name of output file")
 #args = parser.parse_args()
 
+#common things that can't preceed a phone number =; fax:? ; §; digits
+notbefore = "((?<!(= ))(?<!(=))(?<!(fax ))(?<!(fax: ))(?<!(§ ))(?<!(§))(?<!(\d))(?<!(\())(?<!(/)))"
+#1 and 2 has to be followed by certain chars to avoid dates like 1995-1996
+starting1 = "(1|2)( |\)|-|/|\\|\.)" 
+#refactoring what can be in the inside of the number
+inner = "(\d|\(|\)| |-|/|\.|\+)"
+#longer numbers can't start with any number
+longer = notbefore+"(("+starting1+"|0|\+|\()"+inner+"{12,16}\d{2}\\b)"
 
-
-country = "(\+?1\s*([.-]\s*)?)?"
-
-
-
-phone = "("+country+"((\s*([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]‌​)\s*)|([2-9]1[02-9]|[2-9][02-8]1|[2-9][02-8][02-9]))\s*([.-]\s*)?)?([2-9]1[02-‌​9]|[2-9][02-9]1|[2-9][02-9]{2})\s*([.-]\s*)?([0-9]{4})"
-
-
+shorter = notbefore+"(("+starting1+"|0|[3-9]|\+|\()"+inner+"{8,13}\d{2}\\b)"
+#shortest one can't start with paranthesis
+shortest = notbefore+"(("+starting1+"|0|[3-9]|\+)"+inner+"{4,8}\d{2}\\b)"
 
 #compiling the regex
-regex = r"("+phone+")"
-h = re.compile(regex, re.IGNORECASE)
+regex = r"("+longer+"|"+shorter+"|"+shortest+")"
 
+h = re.compile(regex, re.IGNORECASE)
 
 #opening input output files and writing the results into them
 
@@ -33,10 +37,11 @@ with open("all-OANC.txt", "r") as inputfile:
     for line in inputfile:
        matches = h.findall(line)
        if (len(matches) != 0):
+            bracketed = line
             for match in matches:
-                query = match[0].replace("$", "\$");
+                query = match[0].replace("(", "\(").replace(")", "\)").replace(".", "\.").replace("+", "\+").replace("[", "\[").replace("]", "\]")
                 outputfile.write( match[0] + "\n")
-                bracketed = re.sub(r'('+ query +')', r'[\1]', line)
+                bracketed = re.sub(r'('+ query +')', r'[\1]', bracketed)
             #print bracketed
             #print "\n"
             outputfile2.write(bracketed + "\n")

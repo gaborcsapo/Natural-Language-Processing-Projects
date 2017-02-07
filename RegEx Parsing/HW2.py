@@ -40,15 +40,16 @@ h = re.compile(regex, re.IGNORECASE)
 outputfile = open('workfile.txt', 'w')
 outputfile2 = open('workfile2.txt', 'w')
 #with open("args.input.txt", "r") as ins:
-with open("all-OANC.txt", "r") as inputfile:
-#with open("custom.txt", "r") as inputfile:
+#with open("all-OANC.txt", "r") as inputfile:
+with open("custom.txt", "r") as inputfile:
     for line in inputfile:
        matches = h.findall(line)
        if (len(matches) != 0):
+            bracketed = line
             for match in matches:
-                query = match[0].replace("$", "\$");
+                query = match[0].replace("$", "\$").replace("(", "\(").replace(")", "\)").replace(".", "\.").replace("+", "\+").replace("[", "\[").replace("]", "\]")
                 outputfile.write( match[0] + "\n")
-                bracketed = re.sub(r'('+ query +')', r'[\1]', line)
+                bracketed = re.sub(r'('+ query +')', r'[\1]', bracketed)
             #print bracketed
             #print "\n"
             outputfile2.write(bracketed + "\n")
