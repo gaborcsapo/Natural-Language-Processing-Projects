@@ -33,7 +33,7 @@ stop_words = ['a','the','an','and','or','but','about','above','after','along','a
 
 def calc_tf(line, dic):
     line = line.translate(line.maketrans("","", string.punctuation))
-    line = line.strip().split(' ')
+    line = line.strip().lowercase().split(' ')
     for word in line:
         if word not in stop_words:
             if word not in dic:
@@ -55,7 +55,9 @@ def calc_idf(dic, dimensions):
     
     for dim in idf:
         if idf[dim] != 0:
-            idf[dim] = math.log(no_of_docs/idf[dim])           
+            idf[dim] = 1+math.log(no_of_docs/idf[dim])
+        else:
+            idf[dim] = 1
     
     return idf
 
@@ -120,10 +122,10 @@ with open("cran.all.1400", "r") as queryfile:
 result = {}
 for ID in queries:
     dimensions = list(queries[ID].keys())
-    query_idf = calc_idf(queries, list(queries[ID].keys()))
-    query_tfidf = calc_tfidf({ID: queries[ID]}, query_idf, list(queries[ID].keys()))
-    abstract_idf = calc_idf(abstracts, list(queries[ID].keys()))
-    abstract_tfidf = calc_tfidf(abstracts, abstract_idf, list(queries[ID].keys()))
+    query_idf = calc_idf(queries, dimensions)
+    query_tfidf = calc_tfidf({ID: queries[ID]}, query_idf, dimensions)
+    abstract_idf = calc_idf(abstracts, dimensions)
+    abstract_tfidf = calc_tfidf(abstracts, abstract_idf, dimensions)
     
     result[ID] = {}
     for ID2 in abstract_tfidf:
@@ -136,5 +138,5 @@ query_id.sort()
 for ID in query_id:
     sorted_ = sorted(result[ID].items(), key=operator.itemgetter(1))    
     for i in range(len(sorted_)):
-        output.write('\n' + str(ID) + ' ' + str(sorted_[len(sorted_)-i-1][0]) + ' ' + str(sorted_[len(sorted_)-i-1][1]))
+        output.write(str(ID) + ' ' + str(sorted_[len(sorted_)-i-1][0]) + ' ' + str(sorted_[len(sorted_)-i-1][1]) + '\n')
     
