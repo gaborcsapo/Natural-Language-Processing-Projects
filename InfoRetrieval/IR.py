@@ -76,7 +76,7 @@ def calc_tfidf(tf, idf, dimensions):
             if dim in tf[ID]:
                 tfidf[ID][dim] = tf[ID][dim] * idf[dim]
             else:
-                tfidf[ID][dim] = 0       
+                tfidf[ID][dim] = 0.1       
     return tfidf
 
 def dot_product(v1, v2):
