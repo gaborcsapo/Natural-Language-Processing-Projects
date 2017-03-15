@@ -33,7 +33,7 @@ stop_words = ['a','the','an','and','or','but','about','above','after','along','a
                            'you','your','yours','me','my','mine','I','we','us','much','and/or'
                            ] + list(string.punctuation)
 
-stemmer = SnowballStemmer("german")
+stemmer = SnowballStemmer("english")
 
 def calc_tf(line, dic):
     line = word_tokenize(line.strip().lower())
