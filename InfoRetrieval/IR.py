@@ -33,12 +33,15 @@ stop_words = ['a','the','an','and','or','but','about','above','after','along','a
                            'you','your','yours','me','my','mine','I','we','us','much','and/or'
                            ] + list(string.punctuation)
 
-stemmer = SnowballStemmer("english")
+#stemmer = SnowballStemmer("english")
 
 def calc_tf(line, dic):
-    line = word_tokenize(line.strip().lower())
+    #line = word_tokenize(line.strip().lower())
+    line = line.translate(line.maketrans("","", string.punctuation))
+    line = line.strip().lower().split(' ')
     for word in line:
-        stemmed = stemmer.stem(word)
+        #stemmed = stemmer.stem(word)
+        stemmed = word
         if stemmed not in stop_words:
             if stemmed not in dic:
                 dic[stemmed] = 1
