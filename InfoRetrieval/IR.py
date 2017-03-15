@@ -7,8 +7,8 @@ Created on Tue Mar 14 11:19:15 2017
 import string
 import math
 import operator
-from nltk.tokenize import word_tokenize
-from nltk.stem import SnowballStemmer
+#from nltk.tokenize import word_tokenize
+#from nltk.stem import SnowballStemmer
 
 stop_words = ['a','the','an','and','or','but','about','above','after','along','amid','among',\
                            'as','at','by','for','from','in','into','like','minus','near','of','off','on',\
