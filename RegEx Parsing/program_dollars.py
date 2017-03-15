@@ -35,7 +35,6 @@ ofdollars = "((m|b|tr)illions|thousands|hundreds) of dollars"
 regex = r"("+dollartext+"|"+dollarsign+"|"+cents+"|"+ofdollars+")"
 h = re.compile(regex, re.IGNORECASE)
 
-print regex
 #opening input output files and writing the results into them
 
 outputfile = open(args.output+"_single.txt", 'w')
