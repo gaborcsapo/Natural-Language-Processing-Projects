@@ -33,7 +33,7 @@ stop_words = ['a','the','an','and','or','but','about','above','after','along','a
 
 def calc_tf(line, dic):
     line = line.translate(line.maketrans("","", string.punctuation))
-    line = line.strip().lowercase().split(' ')
+    line = line.strip().lower().split(' ')
     for word in line:
         if word not in stop_words:
             if word not in dic:
