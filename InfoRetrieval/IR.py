@@ -8,6 +8,7 @@ import string
 import math
 import operator
 from nltk.tokenize import word_tokenize
+from nltk.stem import SnowballStemmer
 
 stop_words = ['a','the','an','and','or','but','about','above','after','along','amid','among',\
                            'as','at','by','for','from','in','into','like','minus','near','of','off','on',\
@@ -31,16 +32,18 @@ stop_words = ['a','the','an','and','or','but','about','above','after','along','a
                            'him', 'his', 'her', 'she', 'it', 'they', 'them', 'its', 'their','theirs',\
                            'you','your','yours','me','my','mine','I','we','us','much','and/or'
                            ] + list(string.punctuation)
-print(stop_words)
+
+stemmer = SnowballStemmer("german")
 
 def calc_tf(line, dic):
     line = word_tokenize(line.strip().lower())
     for word in line:
-        if word not in stop_words:
-            if word not in dic:
-                dic[word] = 1
+        stemmed = stemmer.stem(word)
+        if stemmed not in stop_words:
+            if stemmed not in dic:
+                dic[stemmed] = 1
             else:
-                dic[word] += 1
+                dic[stemmed] += 1
 
 def calc_idf(dic, dimensions):
     no_of_docs = 0
