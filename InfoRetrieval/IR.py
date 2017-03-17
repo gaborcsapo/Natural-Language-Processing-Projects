@@ -76,11 +76,13 @@ def calc_tfidf(tf, idf, dimensions):
             if dim in tf[ID]:
                 tfidf[ID][dim] = tf[ID][dim] * idf[dim]
             else:
-                tfidf[ID][dim] = 0.15       
+                tfidf[ID][dim] = 0       
     return tfidf
 
-def dot_product(v1, v2):
-    return sum(map(lambda x: x[0] * x[1], zip(v1, v2)))
+def dot_product(K, L):
+    if len(K) != len(L):
+      return 0
+    return sum(i[0] * i[1] for i in zip(K, L))
 
 def cosine_similarity(v1, v2):
     prod = dot_product(v1, v2)
