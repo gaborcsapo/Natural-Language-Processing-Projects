@@ -126,18 +126,20 @@ with open("cran.all.1400", "r") as queryfile:
         elif not ignore:
             calc_tf(line, abstracts[ID])
 
+
 result = {}
+i = 0
 for ID in queries:
+    i += 1
     dimensions = list(queries[ID].keys())
     query_idf = calc_idf(queries, dimensions)
     query_tfidf = calc_tfidf({ID: queries[ID]}, query_idf, dimensions)
     abstract_idf = calc_idf(abstracts, dimensions)
     abstract_tfidf = calc_tfidf(abstracts, abstract_idf, dimensions)
-    
-    result[ID] = {}
+    result[i] = {}
     for ID2 in abstract_tfidf:
-        result[ID][ID2] = compare_vectors(query_tfidf[ID], abstract_tfidf[ID2], dimensions)
-
+        result[i][ID2] = compare_vectors(query_tfidf[ID], abstract_tfidf[ID2], dimensions)
+        
 
 output = open('results.txt', 'w')
 query_id = list(result.keys()) 
