@@ -92,7 +92,7 @@ def cosine_similarity(v1, v2):
     len1 = math.sqrt(dot_product(v1, v1))
     len2 = math.sqrt(dot_product(v2, v2))
     if (len1 * len2) == 0:
-        return 0.1
+        return 0
     return prod / (len1 * len2)
 
 #return the cosine similarity of the query and the abstracts passed in based on the dims parameter
