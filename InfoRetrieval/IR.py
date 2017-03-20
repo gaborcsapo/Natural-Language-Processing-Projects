@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Created on Tue Mar 14 11:19:15 2017
+Created on Tue Mar 11 11:19:15 2017
 
 @author: Gabor
 """
@@ -33,8 +33,10 @@ stop_words = ['a','the','an','and','or','but','about','above','after','along','a
                            'you','your','yours','me','my','mine','I','we','us','much','and/or'
                            ] + list(string.punctuation) + ['1','2','3','4','5','6','7','8','9']
 
+#I am using the snowball stemmer
 stemmer = SnowballStemmer("english")
 
+#calculates the frequency of each word on the line passed and puts it in the dictionary
 def calc_tf(line, dic):
     line = line.translate(line.maketrans("","", string.punctuation))
     line = word_tokenize(line.strip().lower())
@@ -46,6 +48,7 @@ def calc_tf(line, dic):
             else:
                 dic[stemmed] += 1
 
+#calcualtes the idf for the words that are passed in as dimensions
 def calc_idf(dic, dimensions):
     no_of_docs = 0
     for ID in dic:
@@ -65,6 +68,7 @@ def calc_idf(dic, dimensions):
     
     return idf
 
+#calculates tfidf based on the idf and tf and the dimensions passed in
 def calc_tfidf(tf, idf, dimensions):
     tfidf = {}
     for ID in tf:
@@ -76,11 +80,13 @@ def calc_tfidf(tf, idf, dimensions):
                 tfidf[ID][dim] = 0       
     return tfidf
 
+#helper function to calculate dot product
 def dot_product(K, L):
     if len(K) != len(L):
       return 0
     return sum(i[0] * i[1] for i in zip(K, L))
 
+#calcualtes cosine similarity of v1 and v2
 def cosine_similarity(v1, v2):
     prod = dot_product(v1, v2)
     len1 = math.sqrt(dot_product(v1, v1))
@@ -89,6 +95,7 @@ def cosine_similarity(v1, v2):
         return -1
     return prod / (len1 * len2)
 
+#return the cosine similarity of the query and the abstracts passed in based on the dims parameter
 def compare_vectors(query, abstract, dims):
     v1 = []
     v2 = []
@@ -101,6 +108,7 @@ queries = {}
 abstracts = {}
 ID = ''
 i = 0
+#opens queries and read the lines. using the tf function, it calculates the term frequency
 with open("cran.qry", "r") as queryfile:
     for line in queryfile:
         if line[0:2] == '.I':
@@ -110,7 +118,7 @@ with open("cran.qry", "r") as queryfile:
             queries[ID] = {}
         else:
             calc_tf(line, queries[ID])
-
+#same as above but for the abstracts
 with open("cran.all.1400", "r") as queryfile:
     for line in queryfile:
         if line[0:2] == '.I':
@@ -127,9 +135,9 @@ with open("cran.all.1400", "r") as queryfile:
         elif not ignore:
             calc_tf(line, abstracts[ID])
 
-
 result = {}
 i = 0
+#for each query it calculates the idf and tfidf ffor the query and all other abstracts, then calcualtes the cos sim
 for ID in queries:
     dimensions = list(queries[ID].keys())
     #dimensions = [x for x in queries[ID].keys() for dim in range(queries[ID][x])]
@@ -141,7 +149,7 @@ for ID in queries:
     for ID2 in abstract_tfidf:
         result[ID][ID2] = compare_vectors(query_tfidf[ID], abstract_tfidf[ID2], dimensions)
         
-
+#formatting and writing output into file
 output = open('results.txt', 'w')
 query_id = list(result.keys()) 
 query_id.sort()   
