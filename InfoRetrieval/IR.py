@@ -40,8 +40,8 @@ def calc_tf(line, dic):
     #line = line.translate(line.maketrans("","", string.punctuation))
     #line = line.strip().lower().split(' ')
     for word in line:
-        stemmed = stemmer.stem(word)
-        #stemmed = word
+        #stemmed = stemmer.stem(word)
+        stemmed = word
         if stemmed not in stop_words:
             if stemmed not in dic:
                 dic[stemmed] = 1
