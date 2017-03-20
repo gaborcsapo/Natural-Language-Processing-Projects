@@ -144,10 +144,6 @@ for ID in queries:
     abstract_tfidf = calc_tfidf(abstracts, abstract_idf, dimensions)
     result[ID] = {}
     for ID2 in abstract_tfidf:
-        if (ID == 1):
-            if (ID2 == '486'):
-                print(abstracts['486'])
-                print(query_tfidf[ID], abstract_tfidf[ID2], dimensions)
         result[ID][ID2] = compare_vectors(query_tfidf[ID], abstract_tfidf[ID2], dimensions)
         
 
