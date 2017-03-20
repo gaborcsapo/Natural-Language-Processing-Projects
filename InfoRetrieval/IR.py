@@ -131,8 +131,8 @@ with open("cran.all.1400", "r") as queryfile:
 result = {}
 i = 0
 for ID in queries:
-    #dimensions = list(queries[ID].keys())
-    dimensions = [x for x in queries[ID].keys() for dim in range(queries[ID][x])]
+    dimensions = list(queries[ID].keys())
+    #dimensions = [x for x in queries[ID].keys() for dim in range(queries[ID][x])]
     query_idf = calc_idf(queries, dimensions)
     query_tfidf = calc_tfidf({ID: queries[ID]}, query_idf, dimensions)
     abstract_idf = calc_idf(abstracts, dimensions)
