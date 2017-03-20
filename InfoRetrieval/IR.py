@@ -36,12 +36,11 @@ stop_words = ['a','the','an','and','or','but','about','above','after','along','a
 stemmer = SnowballStemmer("english")
 
 def calc_tf(line, dic):
-    line = word_tokenize(line.strip().lower())
     #line = line.translate(line.maketrans("","", string.punctuation))
+    line = word_tokenize(line.strip().lower())
     #line = line.strip().lower().split(' ')
     for word in line:
-        #stemmed = stemmer.stem(word)
-        stemmed = word
+        stemmed = stemmer.stem(word)
         if stemmed not in stop_words:
             if stemmed not in dic:
                 dic[stemmed] = 1
