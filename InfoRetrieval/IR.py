@@ -59,7 +59,6 @@ def calc_idf(dic, dimensions):
         for ID in dic:
             if dim in dic[ID]:
                 idf[dim] += 1
-    
     for dim in idf:
         if idf[dim] != 0:
             idf[dim] = 1+math.log(no_of_docs/idf[dim])
@@ -103,10 +102,12 @@ def compare_vectors(query, abstract, dims):
 queries = {}
 abstracts = {}
 ID = ''
+i = 0
 with open("cran.qry", "r") as queryfile:
     for line in queryfile:
+        i += 1
         if line[0:2] == '.I':
-            ID = line[3:].strip()
+            ID = i
         elif line.strip() == '.W':
             queries[ID] = {}
         else:
@@ -132,22 +133,29 @@ with open("cran.all.1400", "r") as queryfile:
 result = {}
 i = 0
 for ID in queries:
-    i += 1
     dimensions = list(queries[ID].keys())
+    """for dim in dimensions:
+        if queries[ID][dim] > 1:
+            for number in range(queries[ID][dim]):
+                dimensions.append(dim)"""
     query_idf = calc_idf(queries, dimensions)
     query_tfidf = calc_tfidf({ID: queries[ID]}, query_idf, dimensions)
     abstract_idf = calc_idf(abstracts, dimensions)
     abstract_tfidf = calc_tfidf(abstracts, abstract_idf, dimensions)
-    result[i] = {}
+    result[ID] = {}
     for ID2 in abstract_tfidf:
-        result[i][ID2] = compare_vectors(query_tfidf[ID], abstract_tfidf[ID2], dimensions)
+        if (ID == 1):
+            if (ID2 == '486'):
+                print(abstracts['486'])
+                print(query_tfidf[ID], abstract_tfidf[ID2], dimensions)
+        result[ID][ID2] = compare_vectors(query_tfidf[ID], abstract_tfidf[ID2], dimensions)
         
 
 output = open('results.txt', 'w')
 query_id = list(result.keys()) 
 query_id.sort()   
-for ID in query_id:
-    sorted_ = sorted(result[ID].items(), key=operator.itemgetter(1))    
+for ID in query_id:  
+    sorted_ = sorted(result[ID].items(), key=operator.itemgetter(1))
     for i in range(len(sorted_)):
         output.write(str(ID) + ' ' + str(sorted_[len(sorted_)-i-1][0]) + ' ' + str(sorted_[len(sorted_)-i-1][1]) + '\n')
     
