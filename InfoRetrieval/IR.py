@@ -31,14 +31,13 @@ stop_words = ['a','the','an','and','or','but','about','above','after','along','a
                            'whenever', 'whereever', 'whichever', 'whoever', 'whomever' 'he',\
                            'him', 'his', 'her', 'she', 'it', 'they', 'them', 'its', 'their','theirs',\
                            'you','your','yours','me','my','mine','I','we','us','much','and/or'
-                           ] + list(string.punctuation)
+                           ] + list(string.punctuation) + ['1','2','3','4','5','6','7','8','9']
 
 stemmer = SnowballStemmer("english")
 
 def calc_tf(line, dic):
     line = line.translate(line.maketrans("","", string.punctuation))
     line = word_tokenize(line.strip().lower())
-    #line = line.strip().lower().split(' ')
     for word in line:
         stemmed = stemmer.stem(word)
         if stemmed not in stop_words:
@@ -132,11 +131,8 @@ with open("cran.all.1400", "r") as queryfile:
 result = {}
 i = 0
 for ID in queries:
-    dimensions = list(queries[ID].keys())
-    """for dim in dimensions:
-        if queries[ID][dim] > 1:
-            for number in range(queries[ID][dim]):
-                dimensions.append(dim)"""
+    #dimensions = list(queries[ID].keys())
+    dimensions = [x for x in queries[ID].keys() for dim in range(queries[ID][x])]
     query_idf = calc_idf(queries, dimensions)
     query_tfidf = calc_tfidf({ID: queries[ID]}, query_idf, dimensions)
     abstract_idf = calc_idf(abstracts, dimensions)
