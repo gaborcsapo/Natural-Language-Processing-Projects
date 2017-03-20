@@ -36,7 +36,7 @@ stop_words = ['a','the','an','and','or','but','about','above','after','along','a
 stemmer = SnowballStemmer("english")
 
 def calc_tf(line, dic):
-    #line = line.translate(line.maketrans("","", string.punctuation))
+    line = line.translate(line.maketrans("","", string.punctuation))
     line = word_tokenize(line.strip().lower())
     #line = line.strip().lower().split(' ')
     for word in line:
