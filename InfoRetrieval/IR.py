@@ -7,8 +7,8 @@ Created on Tue Mar 14 11:19:15 2017
 import string
 import math
 import operator
-#from nltk.tokenize import word_tokenize
-#from nltk.stem import SnowballStemmer
+from nltk.tokenize import word_tokenize
+from nltk.stem import SnowballStemmer
 
 stop_words = ['a','the','an','and','or','but','about','above','after','along','amid','among',\
                            'as','at','by','for','from','in','into','like','minus','near','of','off','on',\
@@ -33,15 +33,15 @@ stop_words = ['a','the','an','and','or','but','about','above','after','along','a
                            'you','your','yours','me','my','mine','I','we','us','much','and/or'
                            ] + list(string.punctuation)
 
-#stemmer = SnowballStemmer("english")
+stemmer = SnowballStemmer("english")
 
 def calc_tf(line, dic):
-    #line = word_tokenize(line.strip().lower())
-    line = line.translate(line.maketrans("","", string.punctuation))
-    line = line.strip().lower().split(' ')
+    line = word_tokenize(line.strip().lower())
+    #line = line.translate(line.maketrans("","", string.punctuation))
+    #line = line.strip().lower().split(' ')
     for word in line:
-        #stemmed = stemmer.stem(word)
-        stemmed = word
+        stemmed = stemmer.stem(word)
+        #stemmed = word
         if stemmed not in stop_words:
             if stemmed not in dic:
                 dic[stemmed] = 1
@@ -105,8 +105,8 @@ ID = ''
 i = 0
 with open("cran.qry", "r") as queryfile:
     for line in queryfile:
-        i += 1
         if line[0:2] == '.I':
+            i += 1
             ID = i
         elif line.strip() == '.W':
             queries[ID] = {}
