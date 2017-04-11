@@ -1,0 +1,5 @@
+##FEATURES
+word itself, next and the one after the next, previous and the one before the previous, POS, BIO, Stemmed version, isItCapitalized for both the word and the ones after and before. 
+Sentence borders are taken into account when looking at next and previous words.
+
+##RESULTS
