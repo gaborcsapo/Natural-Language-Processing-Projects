@@ -1,5 +1,17 @@
-##FEATURES
-word itself, next and the one after the next, previous and the one before the previous, POS, BIO, Stemmed version, isItCapitalized for both the word and the ones after and before. 
-Sentence borders are taken into account when looking at next and previous words.
+Features used in solution:
+	-following for word, next, one after next, previous and one boefore previous:
+		-POS
+		-BIO
+		-Stem
+		-Capital letter
+		-all these with regard to sentence borders
 
-##RESULTS
+Results on dev corpus:
+	31387 out of 32853 tags correct
+	  accuracy: 95.54
+	8378 groups in key
+	8906 groups in response
+	7571 correct groups
+	  precision: 85.01
+	  recall:    90.37
+	  F1:        87.61
